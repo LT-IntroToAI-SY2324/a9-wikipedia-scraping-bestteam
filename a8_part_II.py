@@ -12,7 +12,7 @@ def get_planet_mean_density(planet_name: str) -> str:
     infobox_text = clean_text(get_first_infobox_text(get_page_html(planet_name)))
     print(infobox_text)
     # TODO: fill this in
-    pattern = "REPLACE ME"
+    pattern = "Mean density(?P<mean_density>[\d.]+)"
     error_text = "Page infobox has no polar radius information"
     match = get_match(infobox_text, pattern, error_text)
     return match.group("mean_density")
@@ -28,11 +28,13 @@ def get_planet_radius(planet_name: str) -> str:
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(planet_name)))
     # TODO: fill this in
-    pattern = "REPLACE ME"
+    pattern = r"Polar\s*radius[^0-9]*([\d,\.]+)\s*(km|kilometers)?"
     error_text = "Page infobox has no polar radius information"
-    match = get_match(infobox_text, pattern, error_text)
-    return match.group("radius")
-
+    try:
+        match = get_match(infobox_text, pattern, error_text)
+        return match.group(1)  
+    except AttributeError:
+        return error_text 
 
 def get_birth_date(name: str) -> str:
     """Gets birth date of the given person
@@ -45,12 +47,15 @@ def get_birth_date(name: str) -> str:
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
     # TODO: fill this in
-    pattern = "REPLACE ME"
-    error_text = (
-        "Page infobox has no birth information (at least none in xxxx-xx-xx format)"
-    )
-    match = get_match(infobox_text, pattern, error_text)
-    return match.group("birth")
+    pattern = r"(?P<birth>\d{4}-\d{2}-\d{2})"  # Regex pattern with named group "birth"
+    error_text = "Page infobox has no birth information (at least none in xxxx-xx-xx format)"
+
+    match = re.search(pattern, infobox_text)
+    if match:
+        return match.group("birth")  
+    else:
+        return error_text  
+
 
 
 if __name__ == "__main__":
