@@ -7,7 +7,15 @@ from typing import List, Match
 from utilities import *
 
 # Assignment 8 Part II
-
+def get_planet_mean_density(planet_name: str) -> str:
+   
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(planet_name)))
+    print(infobox_text)
+    # TODO: fill this in
+    pattern = "REPLACE ME"
+    error_text = "Page infobox has no polar radius information"
+    match = get_match(infobox_text, pattern, error_text)
+    return match.group("mean_density")
 
 def get_planet_radius(planet_name: str) -> str:
     """Gets the radius of the given planet
